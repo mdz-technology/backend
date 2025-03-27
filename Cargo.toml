@@ -1,0 +1,9 @@
+[package]
+name = "backend"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+model_manager = { path = "../model_manager" }
+tokio = "1.44.1"
+actix = "0.13.5"
