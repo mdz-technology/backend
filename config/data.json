@@ -1,0 +1,330 @@
+{
+  "type": "MaterialApp",
+  "initialRoute": "/",
+  "routes": {
+    "/": {
+      "type": "Scaffold",
+      "appBar": {
+        "type": "AppBar",
+        "title": {
+          "type": "Text",
+          "data": "Pantalla Inicial"
+        }
+      },
+      "drawer": {
+        "type": "Drawer",
+        "child": {
+          "type": "ListView",
+          "children": [
+            {
+              "type": "ListTitle",
+              "title": {
+                "type": "Text",
+                "data": "Pantalla A"
+              },
+              "onTap": {
+                "action": "navigate",
+                "data": {
+                  "route": "/screenA"
+                }
+              }
+            },
+            {
+              "type": "ListTitle",
+              "title": {
+                "type": "Text",
+                "data": "Pantalla B"
+              },
+              "onTap": {
+                "action": "navigate",
+                "data": {
+                  "route": "/screenB"
+                }
+              }
+            },
+            {
+              "type": "ListTitle",
+              "title": {
+                "type": "Text",
+                "data": "Pantalla C"
+              },
+              "onTap": {
+                "action": "navigate",
+                "data": {
+                  "route": "/screenC"
+                }
+              }
+            },
+
+            {
+              "type": "ListTitle",
+              "title": { "type": "Text", "data": "Ir a Pantalla D (Master-Detail con Checkbox y Combo)" },
+              "onTap": { "action": "navigate", "data": { "route": "/screenD" } }
+            }
+          ]
+        }
+      }
+    },
+    "/screenC": {
+      "type": "ResponsiveMasterDetail",
+      "breakpoint": 700,
+      "master": {
+        "type": "Scaffold",
+        "appBar": {
+          "type": "AppBar",
+          "title": {
+            "type": "Text",
+            "data": "Application Low-Code"
+          }
+        },
+        "body": {
+          "type": "Column",
+          "children": [
+            {
+              "type": "Row",
+              "children": [
+                {
+                  "type": "Button",
+                  "text": "Agregar",
+                  "onPressed": {
+                    "action": "addItem",
+                    "data": {
+                      "title": "Nuevo Elemento",
+                      "description": "Descripción predeterminada"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "Expanded",
+              "child": {
+                "type": "ListView",
+                "template":
+                {
+                  "type": "ListTitle",
+                  "title": {
+                    "type": "Text",
+                    "data": "{{title}}"
+                  },
+                  "subtitle": {
+                    "type": "Text",
+                    "data": "{{subtitulo}}"
+                  },
+                  "leading": {
+                    "type": "Text",
+                    "data": "{{character}}"
+                  },
+                  "onTap": {
+                    "action": "updateDetail",
+                    "data": {
+                      "id": "{{id}}"
+                    }
+                  }
+                }
+
+              }
+            }
+          ]
+        }
+      },
+      "detail": {
+        "type": "Scaffold",
+        "body": {
+          "type": "Container",
+          "child": {
+            "type": "SingleChildScrollView",
+            "child": {
+              "type": "Column",
+              "children": [
+                {
+                  "type": "Text",
+                  "data": "ID: {{id}}"
+                },
+                {
+                  "type": "TextField",
+                  "controller": "title",
+                  "placeholder": "Título"
+                },
+                {
+                  "type": "TextField",
+                  "controller": "subtitulo",
+                  "placeholder": "Subtitulo"
+                },
+                {
+                  "type": "TextField",
+                  "controller": "character",
+                  "placeholder": "character"
+                },
+                {
+                  "type": "Row",
+                  "children": [
+                    {
+                      "type": "Button",
+                      "text": "Guardar",
+                      "onPressed": {
+                        "action": "saveDetail",
+                        "data": {
+                          "title": "{{title}}",
+                          "description": "{{description}}"
+                        }
+                      }
+                    },
+                    {
+                      "type": "Button",
+                      "text": "Cancelar",
+                      "onPressed": {
+                        "action": "cancelEdit"
+                      }
+                    },
+                    {
+                      "type": "Button",
+                      "text": "Eliminar",
+                      "onPressed": {
+                        "action": "removeItem",
+                        "data": {
+                          "id": "{{id}}"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/screenA": {
+      "type": "Scaffold",
+      "appBar": {
+        "type": "AppBar",
+        "title": {
+          "type": "Text",
+          "data": "Pantalla A"
+        }
+      },
+      "body": {
+        "type": "Center",
+        "child": {
+          "type": "Text",
+          "data": "Contenido de la Pantalla A"
+        }
+      }
+    },
+    "/screenB": {
+      "type": "Scaffold",
+      "appBar": {
+        "type": "AppBar",
+        "title": {
+          "type": "Text",
+          "data": "Pantalla B"
+        }
+      },
+      "body": {
+        "type": "Center",
+        "child": {
+          "type": "Text",
+          "data": "Contenido de la Pantalla B"
+        }
+      }
+    },
+    "/screenD": {
+      "type": "ResponsiveMasterDetail",
+      "breakpoint": 700,
+      "master": {
+        "type": "Scaffold",
+        "appBar": {
+          "type": "AppBar",
+          "title": { "type": "Text", "data": "Master with Checkbox/Combo" }
+        },
+        "body": {
+          "type": "Column",
+          "children": [
+            {
+              "type": "Row",
+              "children": [
+                {
+                  "type": "Button",
+                  "text": "Agregar",
+                  "onPressed": {
+                    "action": "addItemm",
+                    "data": {
+                      "title": "Nuevo Item",
+                      "checked": "false",
+                      "comboValue": "op1",
+                      "screen": "D"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "Expanded",
+              "child": {
+                "type": "ListView",
+                "children": [
+                  {
+                    "type": "ListTitle",
+                    "title": { "type": "Text", "data": "{{title}}" },
+                    "onTap": { "action": "updateDetail", "data": { "id": "{{id}}" } }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "detail": {
+        "type": "Scaffold",
+        "body": {
+          "type": "Container",
+          "child": {
+            "type": "SingleChildScrollView",
+            "child": {
+              "type": "Column",
+              "children": [
+                { "type": "Text", "data": "ID: {{id}}" },
+                { "type": "TextField", "controller": "title", "placeholder": "Título" },
+                {
+                  "type": "Checkbox",
+                  "value": "{{checked}}",
+                  "onChanged": {
+                    "action": "updateDetailField",
+                    "data": { "field": "checked" }
+                  }
+                },
+                {
+                  "type": "Dropdown",
+                  "value": "{{comboValue}}",
+                  "items": [
+                    { "value": "op1", "text": "Opción 1" },
+                    { "value": "op2", "text": "Opción 2" }
+                  ],
+                  "onChanged": {
+                    "action": "updateDetailField",
+                    "data": { "field": "comboValue" }
+                  }
+                },
+                {
+                  "type": "Button",
+                  "text": "Guardar",
+                  "onPressed": {
+                    "action": "saveDetail"
+                  }
+                },
+                {
+                  "type": "Button",
+                  "text": "Cancelar",
+                  "onPressed": {
+                    "action": "cancelEdit"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

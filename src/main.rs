@@ -1,8 +1,10 @@
 use actix::System;
-use model_manager::{DynamicValue, DynamicValueImpl, ModelManager, ModelManagerImpl};
+use model_manager::{DynamicValue, DynamicValueImpl, JsonToDynamicValueConverter, ModelManager, ModelManagerImpl};
+use model_manager::DynamicValueConverter;
+use std::fs;
 
-type SelectedDynamicValue = DynamicValueImpl; // Cambia esto por otra implementación si es necesario
-type SelectedModelManager = ModelManagerImpl<SelectedDynamicValue>; // También se puede cambiar
+type SelectedDynamicValue = DynamicValueImpl;
+type SelectedModelManager = ModelManagerImpl<SelectedDynamicValue>;
 
 fn main() {
     println!("Iniciando sistema Actix...");
@@ -14,11 +16,18 @@ fn main() {
             let mut manager: SelectedModelManager = SelectedModelManager::new();
             println!("Manager creado.");
 
-            let mut service = Service::new(manager);
+            let converter = JsonToDynamicValueConverter;
+            let mut service = Service::new(manager, converter);
+            let file_path = "config/data.json";
+            let json_str = fs::read_to_string(file_path).expect("Error al leer el archivo JSON");
+            println!("Contenido del archivo JSON: {}", json_str);
+            match service.load_json(&json_str).await {
+                Ok(value) => {
+                    println!("Loaded value: {:?}", value.get_type());
+                },
+                Err(err) => println!("Error: {}", err),
+            }
             println!("Service creado.");
-
-            let result = service.load_json("data").await;
-            println!("Resultado: {:?}", result.ok());
         });
 
         let _ = handle.await;
@@ -27,21 +36,30 @@ fn main() {
     println!("Finalizando ejecución...");
 }
 
-struct Service<M: ModelManager<Value = V> + Send + Sync, V: DynamicValue + Send + Sync> {
+pub struct Service<M, C>
+where
+    M: ModelManager + Send + Sync,
+    C: for<'a> DynamicValueConverter<&'a str> + Send + Sync,
+{
     model_manager: M,
-    _marker: std::marker::PhantomData<V>,
+    converter: C
 }
 
-impl<M: ModelManager<Value = V> + Send + Sync, V: DynamicValue + Send + Sync> Service<M, V> {
-    fn new(model_manager: M) -> Self {
+impl<M, C> Service<M, C>
+where
+    M: ModelManager + Send + Sync,
+    C: for<'a> DynamicValueConverter<&'a str, Output = M::Value> + Send + Sync,
+{
+    pub fn new(model_manager: M, converter: C) -> Self {
         Self {
             model_manager,
-            _marker: std::marker::PhantomData,
+            converter
         }
     }
 
-    async fn load_json(&mut self, data: &str) -> Result<V, String> {
-        let new_value = V::new_object(); // Ahora usamos el trait `DynamicValue`
-        self.model_manager.insert("algo".to_string(), None, new_value).await
+    pub async fn load_json(&mut self, data: &str) -> Result<M::Value, String> {
+        let new_value = self.converter.convert(data)?;
+        Ok(new_value)
+        //self.model_manager.insert("algo".to_string(), None, new_value).await
     }
 }
