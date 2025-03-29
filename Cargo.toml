@@ -16,4 +16,5 @@ actix = "0.13.5"
 libc = "0.2"
 dart-sys = { git = "https://github.com/dart-sys/dart-sys" }
 libloading = "0.8.6"
+rand = "0.9.0"
 

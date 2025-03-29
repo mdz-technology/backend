@@ -1,8 +1,9 @@
-use std::ffi::CStr;
+use std::ffi::{CStr, CString};
 use std::os::raw::{c_void, c_int};
 use std::thread;
 use std::time::Duration;
 use std::ptr;
+use rand::Rng;
 
 /// Tipo de la función `Dart_PostCObject_DL`
 type DartPostCObjectFn = extern "C" fn(i64, *mut DartCObject) -> bool;
@@ -33,28 +34,41 @@ pub extern "C" fn register_dart_post_cobject(func: DartPostCObjectFn) {
 /// Función para iniciar un hilo de Rust que enviará un mensaje a Dart.
 #[no_mangle]
 pub extern "C" fn start_rust_thread(send_port: i64) {
-    thread::spawn(move || {
-        thread::sleep(Duration::from_secs(1));
+    for i in 1..=10 {
+        let send_port_clone = send_port; // ✅ Clonamos la variable para cada hilo
+        let delay = rand::thread_rng().gen_range(0..=500);
+        thread::spawn(move || {
+            // 🔹 Cada hilo tiene un pequeño retraso aleatorio (0 - 500ms)
+            thread::sleep(Duration::from_millis(delay)); // ⏳ Retraso aleatorio
 
-        let mensaje = "Mensaje desde Ru__st\0";
-        let mut c_object = DartCObject {
-            typ: 4,  // Suponiendo que 4 es String en Dart
-            value: DartCObjectValue {
-                as_string: mensaje.as_ptr(),
-            },
-        };
+            let mensaje = CString::new(format!("Mensaje #{} (delay {}ms) desde Rust", i, delay))
+                .unwrap();
+            let ptr_mensaje = mensaje.into_raw(); // ✅ Convertimos en puntero
 
-        unsafe {
-            if let Some(post_cobject) = DART_POST_COBJECT {
-                let success = post_cobject(send_port, &mut c_object);
-                if !success {
-                    eprintln!("Error al enviar mensaje a Flutter");
+            let mut c_object = DartCObject {
+                typ: 5,  // ✅ 4 es `String` en Dart
+                value: DartCObjectValue {
+                    as_string: ptr_mensaje as *const u8, // ✅ Pasamos un puntero válido
+                },
+            };
+
+            unsafe {
+                if let Some(post_cobject) = DART_POST_COBJECT {
+                    let success = post_cobject(send_port, &mut c_object);
+                    if !success {
+                        eprintln!("Error al enviar mensaje a Flutter");
+                    }
+                } else {
+                    eprintln!("DART_POST_COBJECT no está registrado");
                 }
-            } else {
-                eprintln!("DART_POST_COBJECT no está registrado");
             }
-        }
-    });
+
+            // 🔹 Liberamos la memoria después de enviar el mensaje
+            unsafe {
+                let _ = CString::from_raw(ptr_mensaje);
+            }
+        });
+    }
 }
 
 /// Recibe un mensaje desde Flutter
