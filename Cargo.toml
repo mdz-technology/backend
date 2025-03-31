@@ -13,8 +13,5 @@ crate-type = ["rlib", "cdylib"] # Configuración opcional para crear librerías 
 model_manager = { path = "../model_manager" }
 tokio = "1.44.1"
 actix = "0.13.5"
-libc = "0.2"
-dart-sys = { git = "https://github.com/dart-sys/dart-sys" }
-libloading = "0.8.6"
 rand = "0.9.0"
 
