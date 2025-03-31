@@ -1,22 +1,22 @@
+use crate::ui_communication::application::message_receiver::MessageReceiver;
+use crate::ui_communication::infrastructure::message_receiver_impl::MessageReceiverImpl;
 use std::ffi::CStr;
 use std::os::raw::c_char;
-use std::sync::{mpsc, Mutex};
 use std::sync::mpsc::{Receiver, Sender};
-use std::thread;
-use std::time::Duration;
+use std::sync::mpsc;
 
 // Global sender to receive messages from Flutter
 static mut FLUTTER_SENDER: Option<Sender<String>> = None;
 
 pub fn start_message_listener() {
-    // Crear un canal mpsc para recibir mensajes desde Flutter
+    let message_receiver = MessageReceiverImpl;
+
     let (tx, rx): (Sender<String>, Receiver<String>) = mpsc::channel();
     unsafe {
         FLUTTER_SENDER = Some(tx);
     }
     while let Ok(message) = rx.recv() {
-        println!("[Rust] Rust recibio: {}", message);
-        // Process the message (You can extend this part)
+        message_receiver.receive(message);
     }
 }
 
