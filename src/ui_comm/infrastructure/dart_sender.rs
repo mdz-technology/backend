@@ -1,6 +1,6 @@
 use std::ffi::CString;
 use std::sync::{Mutex, OnceLock};
-use crate::ui_communication::infrastructure::dart_post_c_object_sender::{DartCObject, DartCObjectValue, DART_POST_COBJECT};
+use crate::ui_comm::infrastructure::dart_post_c_object_sender::{DartCObject, DartCObjectValue, DART_POST_COBJECT};
 
 static INSTANCE: OnceLock<DartSender> = OnceLock::new();
 

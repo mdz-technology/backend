@@ -1,12 +1,12 @@
-pub mod ui_communication;
+pub mod ui_comm;
 
 use std::thread;
 use std::time::Duration;
 use rand::Rng;
-use ui_communication::infrastructure::dart_receiver;
-use ui_communication::infrastructure::dart_sender::DartSender;
-use crate::ui_communication::application::message_sender::MessageSender;
-use crate::ui_communication::infrastructure::message_sender_impl::MessageSenderImpl;
+use ui_comm::infrastructure::dart_receiver;
+use ui_comm::infrastructure::dart_sender::DartSender;
+use crate::ui_comm::application::message_sender::MessageSender;
+use crate::ui_comm::infrastructure::message_sender_impl::MessageSenderImpl;
 
 #[no_mangle]
 extern "C" fn start_rust_thread(dart_send_port: i64) {

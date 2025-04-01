@@ -1,4 +1,4 @@
-use crate::ui_communication::infrastructure::message_sender_impl::MessageSenderImpl;
+use crate::ui_comm::infrastructure::message_sender_impl::MessageSenderImpl;
 
 pub trait MessageSender {
     fn new() -> Self;

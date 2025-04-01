@@ -1,5 +1,5 @@
-use crate::ui_communication::application::message_receiver::MessageReceiver;
-use crate::ui_communication::infrastructure::message_receiver_impl::MessageReceiverImpl;
+use crate::ui_comm::application::message_receiver::MessageReceiver;
+use crate::ui_comm::infrastructure::message_receiver_impl::MessageReceiverImpl;
 use std::ffi::CStr;
 use std::os::raw::c_char;
 use std::sync::mpsc::{Receiver, Sender};

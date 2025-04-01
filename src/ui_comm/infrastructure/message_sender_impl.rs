@@ -1,5 +1,5 @@
-use crate::ui_communication::infrastructure::dart_sender::DartSender;
-use crate::ui_communication::application::message_sender::MessageSender;
+use crate::ui_comm::infrastructure::dart_sender::DartSender;
+use crate::ui_comm::application::message_sender::MessageSender;
 
 pub struct MessageSenderImpl;
 impl MessageSender for MessageSenderImpl {
