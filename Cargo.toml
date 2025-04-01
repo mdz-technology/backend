@@ -3,7 +3,15 @@ name = "backend"
 version = "1.0.0"
 edition = "2021"
 
+[lib]
+name = "backend"
+path = "src/lib.rs"
+# generate to library compatible with C
+crate-type = ["rlib", "cdylib"] # Configuración opcional para crear librerías compartidas
+
 [dependencies]
 model_manager = { path = "../model_manager" }
 tokio = "1.44.1"
 actix = "0.13.5"
+rand = "0.9.0"
+
